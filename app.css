@@ -1,0 +1,7 @@
+.chips {
+    height: 50px;
+}
+
+.chips-input:focus {
+    outline: none;
+}

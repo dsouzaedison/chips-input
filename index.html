@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chips-input">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords"
+          content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" type="image/x-icon" href=""/>
+    <title>Title</title>
+    <!--<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>-->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <!--<script src="bower_components/jquery/dist/jquery.min.js"></script>-->
+    <link rel="stylesheet" href="app.css"/>
+    <!--<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css"/>-->
+    <script src="routes.js"></script>
+    <script src="app.js"></script>
+    <script src="appJQ.js"></script>
+</head>
+<body ng-controller="ctrl">
+<h1>Chips Generator</h1>
+<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()">
+    {{chip}}
+    <span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span>
+</div>
+
+<input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="process($event)"
+       ng-blur="addChip()" size="{{inputSize}}" ng-style="loadInputStyles()" autofocus>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "chips-input",
+  "homepage": "https://github.com/dsouzaedison/chips-input",
+  "authors": [
+    "Edison D'souza"
+  ],
+  "description": "Angular Chips Input",
+  "main": "",
+  "license": "MIT",
+  "dependencies": {
+    "angular-route": "^1.5.8",
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "angular": "^1.5.8"
+  }
+}
