@@ -36,7 +36,7 @@ angular.module('chips-input', [])
 
         $scope.loadChipStyles = function () {
             return {
-                'color': '#87ccf3',
+                'color': 'rgb(122, 127, 130)',
                 'background-color': '#f1f1f1',
                 'height': '50px',
                 'box-shadow': '0 1px 1px rgba(0,0,0,0.15),-1px 0 0 rgba(0,0,0,0.03),1px 0 0 rgba(0,0,0,0.03),0 1px 0 rgba(0,0,0,0.12)',
@@ -65,7 +65,7 @@ angular.module('chips-input', [])
         $scope.loadInputStyles = function () {
             return {
                 'height': '48px',
-                'min-width' : '15px',
+                'min-width': '15px',
                 'display': 'inline-block',
                 'font-size': '18px',
                 'line-height': '50px',
@@ -74,20 +74,27 @@ angular.module('chips-input', [])
                 'padding': '0px 25px',
                 'position': 'absolute',
                 'border': 'none',
-                'color': '#cacaca'
+                'color': '#cacaca',
+                'background' : 'inherit'
             };
         };
-        
+
         var css = '.chips-input:focus {outline: none;} .removeChip:hover {color : #5f5f5f !important;}',
             head = document.head || document.getElementsByTagName('head')[0],
             style = document.createElement('style');
 
         style.type = 'text/css';
-        if (style.styleSheet){
+        if (style.styleSheet) {
             style.styleSheet.cssText = css;
         } else {
             style.appendChild(document.createTextNode(css));
         }
 
         head.appendChild(style);
+    })
+
+    .directive("chipsInput", function () {
+        return {
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()">{{chip}}<span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="process($event)" ng-blur="addChip()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" autofocus>'
+        };
     });
