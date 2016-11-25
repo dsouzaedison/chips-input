@@ -26,6 +26,6 @@
 </div>
 
 <input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="process($event)"
-       ng-blur="addChip()" size="{{inputSize}}" ng-style="loadInputStyles()" autofocus>
+       ng-blur="addChip()" size="15" ng-style="loadInputStyles()" maxlength="{{maxlength}}" autofocus>
 </body>
 </html>

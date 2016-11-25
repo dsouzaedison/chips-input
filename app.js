@@ -1,15 +1,18 @@
 angular.module('chips-input', [])
-    .controller('ctrl', function ($scope) {
+    .controller('ctrl', function ($scope, $window) {
         $scope.event = '';
-        $scope.inputSize = 1;
+        // $scope.inputSize = 2;
         $scope.chipName = '';
-        $scope.chips = ['adw'];
+        $scope.maxlength = 15;
+        $scope.chips = [];
 
         $scope.process = function (event) {
             if (event.keyCode == 32 || event.keyCode == 13) {
                 if ($scope.chipName != "") {
                     $scope.chips.push($scope.chipName);
                     $scope.chipName = '';
+                    // $scope.inputSize = 2;
+                    // $window.document.getElementById('input-chip').style.width = 5 + 'px';
                 }
             }
 
@@ -18,7 +21,9 @@ angular.module('chips-input', [])
                     $scope.chips.pop();
             }
 
-            $scope.inputSize++;
+            // if ($scope.inputSize < 45)
+            //     $scope.inputSize++;
+            // $window.document.getElementById('input-chip').style.width = $scope.inputSize * 5 + 'px';
             $window.document.getElementById('input-chip').focus();
         };
 
@@ -26,6 +31,7 @@ angular.module('chips-input', [])
             if ($scope.chipName != "") {
                 $scope.chips.push($scope.chipName);
                 $scope.chipName = '';
+                // $scope.inputSize = 2;
             }
         };
 
@@ -76,5 +82,8 @@ angular.module('chips-input', [])
                 'color': '#cacaca'
             };
         };
+
+        // var style = "<style>.abc {color:#fff;}";
+        // document.getElementsByTagName('head').append(style);
 
     });
