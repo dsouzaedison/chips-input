@@ -1,0 +1,22 @@
+{
+  "name": "chips-input",
+  "main": "chips-input.js",
+  "homepage": "https://github.com/dsouzaedison/chips-input",
+  "authors": [
+    "Edison Lancy D'souza"
+  ],
+  "description": "Creates chips based on user input.",
+  "keywords": [
+    "chips-input",
+    "input-chips",
+    "input",
+    "chip",
+    "chipsinput",
+    "inputchips",
+    "chips"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.5.8"
+  }
+}
