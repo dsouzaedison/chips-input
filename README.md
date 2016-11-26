@@ -34,3 +34,9 @@ That's it! You are good to go.
 ###Initialize Chips with your controller.
 
 `chipsInput.init(["Hey", "Billy"]);`
+
+##INFO
+
+You can access your chips array here : 
+
+`$scope.chips = chipsInput.chips;`
