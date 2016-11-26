@@ -9,6 +9,10 @@ Install using Bower
 
 `bower install chips-input`
 
+##Import Script
+
+`<script src="bower_components/chips-input/chips-input.js"></script>`
+
 ##Dependencies
 
 - Angular
