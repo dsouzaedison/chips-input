@@ -3,18 +3,19 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" ng-focus="autofocus">'
+            template: '<div class="chip" ng-attr-autofocus="{{autofocus()}}" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" ng-focus="autofocus">'
         };
     })
 
     .service('chipsInput', function ($rootScope) {
-        this.event = '';
-        this.maxlength = 30;
-        this.autofocus = '';
+        var service = this;
+        service.event = '';
+        service.maxlength = 30;
+        service.autofocus = false;
 
-        this.chips = [];
+        service.chips = [];
 
-        this.chip = {
+        service.chip = {
             color: 'rgb(122, 127, 130)',
             background: '#f1f1f1',
             height: '50px',
@@ -29,7 +30,7 @@ angular.module('chips-input', [])
             textTransform: 'Capitalize'
         };
 
-        this.close = {
+        service.close = {
             paddingLeft: '10px',
             color: '#888',
             fontWeight: 'bold',
@@ -38,7 +39,7 @@ angular.module('chips-input', [])
             cursor: 'pointer'
         };
 
-        this.input = {
+        service.input = {
             height: '48px',
             minWidth: '15px',
             display: 'inline-block',
@@ -55,48 +56,83 @@ angular.module('chips-input', [])
 
         //SETTERS
 
-        this.init = function (values) {
+        service.init = function (values) {
             if (values.isArray) {
                 values.forEach(function (value) {
-                    this.chips.push(value);
+                    service.chips.push(value);
                 });
             } else {
-                this.chips = values;
+                service.chips = values;
             }
 
             $rootScope.$broadcast('chips:updated');
         }
 
-        this.clear = function (value) {
-            this.chips = [];
+        service.clear = function (value) {
+            service.chips = [];
             $rootScope.$broadcast('chips:updated');
         }
 
-        this.disableAutofocus = function () {
-            this.autofocus = '';
+        service.enableAutofocus = function () {
+            service.autofocus = true;
             $rootScope.$broadcast('autofocus:updated');
         }
 
-        this.enableAutofocus = function () {
-            this.autofocus = 'autofocus';
+        service.disableAutofocus = function () {
+            service.autofocus = false;
             $rootScope.$broadcast('autofocus:updated');
         }
 
-        this.addChip = function (chip) {
-            this.chips.push(chip);
+        service.addChip = function (chip) {
+            service.chips.push(chip);
             $rootScope.$broadcast('chips:updated');
         }
 
-        this.popChip = function () {
-            this.chips.pop();
+        service.popChip = function () {
+            service.chips.pop();
             $rootScope.$broadcast('chips:updated');
         }
 
-        this.spliceChip = function (index) {
-            this.chips.splice(index, 1);
+        service.spliceChip = function (index) {
+            service.chips.splice(index, 1);
             $rootScope.$broadcast('chips:updated');
         }
 
+        service.chipStyle = function (var1, var2) {
+            if (var1 instanceof Object) {
+                for (var key in var1) {
+                    service.chip[key] = var1[key];
+                }
+            } else {
+                service.chip[var1] = var2;
+            }
+
+            $rootScope.$broadcast('chipStyle:updated');
+        }
+
+        service.closeBtnStyle = function (var1, var2) {
+            if (var1 instanceof Object) {
+                for (var key in var1) {
+                    service.close[key] = var1[key];
+                }
+            } else {
+                service.close[var1] = var2;
+            }
+
+            $rootScope.$broadcast('closeBtnStyle:updated');
+        }
+
+        service.inputStyle = function (var1, var2) {
+            if (var1 instanceof Object) {
+                for (var key in var1) {
+                    service.input[key] = var1[key];
+                }
+            } else {
+                service.input[var1] = var2;
+            }
+
+            $rootScope.$broadcast('inputStyle:updated');
+        }
         //PSEUDO CLASS
 
         var css = '.chips-input:focus {outline: none;} .removeChip:hover {color : #5f5f5f !important;}',
@@ -116,8 +152,6 @@ angular.module('chips-input', [])
     .controller('chipsCtrl', function ($scope, $window, chipsInput) {
         // console.log('Chips Ctrl');
         $scope.chipName = '';
-
-        $scope.autofocus = chipsInput.autofocus;
 
         $scope.maxlength = chipsInput.maxlength;
 
@@ -195,14 +229,41 @@ angular.module('chips-input', [])
             chipsInput.spliceChip(index);
         }
 
+        $scope.autofocus = function () {
+            return chipsInput.autofocus;
+        };
         //Listener
 
         $scope.$on('chips:updated', function () {
             $scope.chips = chipsInput.chips;
         });
 
+        $scope.$on('chipStyle:updated', function () {
+            $scope.refresh();
+        });
+
+        $scope.$on('closeBtnStyle:updated', function () {
+            $scope.refresh();
+        });
+
+        $scope.$on('inputStyle:updated', function () {
+            $scope.refresh();
+        });
+
+        $scope.$on('autofocus:updated', function () {
+            $scope.refresh();
+        });
+
         $scope.$on('autofocus:updated', function () {
             $scope.autofocus = chipsInput.autofocus;
+            $scope.refresh();
         });
+
+
+        //Refresh
+
+        $scope.refresh = function () {
+            $scope.$apply();
+        }
     });
 
