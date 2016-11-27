@@ -3,7 +3,7 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-attr-autofocus="{{autofocus()}}" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" ng-focus="autofocus">'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" ng-keyup="trimSpace($event)">'
         };
     })
 
@@ -56,14 +56,39 @@ angular.module('chips-input', [])
 
         //SETTERS
 
-        service.init = function (values) {
-            if (values.isArray) {
-                values.forEach(function (value) {
-                    service.chips.push(value);
-                });
-            } else {
-                service.chips = values;
+        service.init = function (options) {
+            if (options instanceof Object) {
+                if (options.chips) {
+                    if ((options.chips) instanceof Array) {
+                        options.chips.forEach(function (value) {
+                            service.chips.push(value);
+                        });
+                    } else {
+                        service.chips.push(options.chips);
+                    }
+                }
+
+                if (options.autofocus)
+                    service.focus();
+
+                if (options.maxlength)
+                    service.maxlength = options.maxlength;
+
+                if (options.chipStyle)
+                    service.chipStyle(options.chipStyle);
+
+                if (options.closeBtnStyle)
+                    service.closeBtnStyle(options.closeBtnStyle);
+
+                if (options.inputStyle)
+                    service.inputStyle(options.inputStyle);
+
+                if (options.chipType)
+                    if (options.chipType == 'rounded')
+                        service.roundedChip();
+                    else service.throwError('Unknown ChipType in chipsInput.init() Function');
             }
+            else service.throwError('Function init() expects an Object');
 
             $rootScope.$broadcast('chips:updated');
         };
@@ -71,16 +96,6 @@ angular.module('chips-input', [])
         service.clear = function () {
             service.chips = [];
             $rootScope.$broadcast('chips:updated');
-        }
-
-        service.enableAutofocus = function () {
-            service.autofocus = true;
-            $rootScope.$broadcast('autofocus:updated');
-        }
-
-        service.disableAutofocus = function () {
-            service.autofocus = false;
-            $rootScope.$broadcast('autofocus:updated');
         }
 
         service.addChip = function (chip) {
@@ -103,9 +118,9 @@ angular.module('chips-input', [])
                 for (var key in var1) {
                     service.chip[key] = var1[key];
                 }
-            } else {
+            } else if (var2) {
                 service.chip[var1] = var2;
-            }
+            } else service.throwError('chipStyle parameters unrecognized');
 
             $rootScope.$broadcast('chipStyle:updated');
         }
@@ -115,9 +130,9 @@ angular.module('chips-input', [])
                 for (var key in var1) {
                     service.close[key] = var1[key];
                 }
-            } else {
+            } else if (var2) {
                 service.close[var1] = var2;
-            }
+            } else service.throwError('chipStyle parameters unrecognized');
 
             $rootScope.$broadcast('closeBtnStyle:updated');
         };
@@ -127,9 +142,9 @@ angular.module('chips-input', [])
                 for (var key in var1) {
                     service.input[key] = var1[key];
                 }
-            } else {
+            } else if (var2) {
                 service.input[var1] = var2;
-            }
+            } else service.throwError('chipStyle parameters unrecognized');
 
             $rootScope.$broadcast('inputStyle:updated');
         };
@@ -138,10 +153,16 @@ angular.module('chips-input', [])
             service.chip.borderRadius = service.chip.height;
             $rootScope.$broadcast('chipStyle:updated');
         };
-        
+
         service.focus = function () {
             $window.document.getElementById('input-chip').focus();
             // service.refresh();
+        };
+
+        //Error
+
+        service.throwError = function (msg) {
+            throw 'Error: ' + msg;
         };
 
         //Refresh
@@ -172,6 +193,8 @@ angular.module('chips-input', [])
         $scope.maxlength = chipsInput.maxlength;
 
         $scope.chips = chipsInput.chips;
+
+        $scope.disabled = chipsInput.disabled;
 
         $scope.loadChipStyles = function () {
             return {
@@ -231,7 +254,7 @@ angular.module('chips-input', [])
                     chipsInput.popChip();
             }
 
-            $window.document.getElementById('input-chip').focus();
+            chipsInput.focus();
         };
 
         $scope.addChipOnBlur = function () {
@@ -241,13 +264,16 @@ angular.module('chips-input', [])
             }
         };
 
+        $scope.trimSpace = function (event) {
+            //Issue : space conflict and input field clear delay
+            if (event.keyCode == 32)
+                document.getElementById('input-chip').value = '';
+        };
+
         $scope.deleteChip = function (index) {
             chipsInput.spliceChip(index);
         };
 
-        $scope.autofocus = function () {
-            return chipsInput.autofocus;
-        };
         //Listener
 
         $scope.$on('chips:updated', function () {
@@ -263,15 +289,6 @@ angular.module('chips-input', [])
         });
 
         $scope.$on('inputStyle:updated', function () {
-            $scope.refresh();
-        });
-
-        $scope.$on('autofocus:updated', function () {
-            $scope.refresh();
-        });
-
-        $scope.$on('autofocus:updated', function () {
-            $scope.autofocus = chipsInput.autofocus;
             $scope.refresh();
         });
 
