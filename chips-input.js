@@ -7,7 +7,7 @@ angular.module('chips-input', [])
         };
     })
 
-    .service('chipsInput', function ($rootScope) {
+    .service('chipsInput', function ($rootScope, $window) {
         var service = this;
         service.event = '';
         service.maxlength = 30;
@@ -66,9 +66,9 @@ angular.module('chips-input', [])
             }
 
             $rootScope.$broadcast('chips:updated');
-        }
+        };
 
-        service.clear = function (value) {
+        service.clear = function () {
             service.chips = [];
             $rootScope.$broadcast('chips:updated');
         }
@@ -91,12 +91,12 @@ angular.module('chips-input', [])
         service.popChip = function () {
             service.chips.pop();
             $rootScope.$broadcast('chips:updated');
-        }
+        };
 
         service.spliceChip = function (index) {
             service.chips.splice(index, 1);
             $rootScope.$broadcast('chips:updated');
-        }
+        };
 
         service.chipStyle = function (var1, var2) {
             if (var1 instanceof Object) {
@@ -120,7 +120,7 @@ angular.module('chips-input', [])
             }
 
             $rootScope.$broadcast('closeBtnStyle:updated');
-        }
+        };
 
         service.inputStyle = function (var1, var2) {
             if (var1 instanceof Object) {
@@ -132,7 +132,24 @@ angular.module('chips-input', [])
             }
 
             $rootScope.$broadcast('inputStyle:updated');
-        }
+        };
+
+        service.roundedChip = function () {
+            service.chip.borderRadius = service.chip.height;
+            $rootScope.$broadcast('chipStyle:updated');
+        };
+        
+        service.focus = function () {
+            $window.document.getElementById('input-chip').focus();
+            // service.refresh();
+        };
+
+        //Refresh
+
+        // service.refresh = function () {
+        //     $rootScope.$broadcast('style:updated');
+        // };
+
         //PSEUDO CLASS
 
         var css = '.chips-input:focus {outline: none;} .removeChip:hover {color : #5f5f5f !important;}',
@@ -150,7 +167,6 @@ angular.module('chips-input', [])
     })
 
     .controller('chipsCtrl', function ($scope, $window, chipsInput) {
-        // console.log('Chips Ctrl');
         $scope.chipName = '';
 
         $scope.maxlength = chipsInput.maxlength;
@@ -168,7 +184,7 @@ angular.module('chips-input', [])
                 'border-radius': chipsInput.chip.borderRadius,
                 'display': chipsInput.chip.display,
                 'font-size': chipsInput.chip.fontSize,
-                'line-height': chipsInput.chip.lineHeight,
+                'line-height': chipsInput.chip.height,
                 'overflow': chipsInput.chip.overflow,
                 'text-transform': chipsInput.chip.textTransform
             };
@@ -187,11 +203,11 @@ angular.module('chips-input', [])
 
         $scope.loadInputStyles = function () {
             return {
-                'height': chipsInput.input.height,
+                'height': chipsInput.chip.height,
                 'min-width': chipsInput.input.minWidth,
                 'display': chipsInput.input.display,
                 'font-size': chipsInput.input.fontSize,
-                'line-height': chipsInput.input.lineHeight,
+                'line-height': chipsInput.chip.height,
                 'overflow': chipsInput.input.overflow,
                 'margin': chipsInput.input.margin,
                 'padding': chipsInput.input.padding,
@@ -227,7 +243,7 @@ angular.module('chips-input', [])
 
         $scope.deleteChip = function (index) {
             chipsInput.spliceChip(index);
-        }
+        };
 
         $scope.autofocus = function () {
             return chipsInput.autofocus;
@@ -258,7 +274,6 @@ angular.module('chips-input', [])
             $scope.autofocus = chipsInput.autofocus;
             $scope.refresh();
         });
-
 
         //Refresh
 
