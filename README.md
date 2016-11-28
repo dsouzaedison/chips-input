@@ -37,7 +37,25 @@ That's it! You are good to go.
 
 ###Initialize Chips with your controller.
 
-`chipsInput.init(["Hey", "Billy"]);`
+```chipsInput.init(
+{
+  chips: ["hey", "billy"], 
+  chipStyle : {
+     color: '#91d6f0', 
+     background: '#f4f4f4', 
+     height: '40px'
+    }, 
+    closeBtnStyle : {
+      color : '#888'
+    }, 
+    inputStyle : {
+      background : 'inherit'
+    }, 
+    autofocus: true, 
+    maxlength: 10, 
+    chipType : 'rounded'
+});
+```
 
 ###Rounded Chips
 
@@ -51,9 +69,10 @@ Call this function to get rounded chips, or just use custom styles.
 
 You can either pass your style object or single pair.
 
-`$scope.myChipStyle = { color : 'white', background: 'black', height : '50px', fontSize : '25px'};`
+```$scope.myChipStyle = { color : 'white', background: 'black', height : '50px', fontSize : '25px'};
 
-`chipsInput.chipStyle($scope.myChipStyle);`
+chipsInput.chipStyle($scope.myChipStyle);
+```
 
 or
 
@@ -62,11 +81,20 @@ or
 
 Available Options : 
 
-* chipsInput.chipStyle()
+* chipsInput.chips();  //Initial chips to be added.
 
-* chipsInput.inputStyle()
+* chipsInput.chipType();  // Options : 'rounded' ( Default will be Sharp Edges )
 
-* chipsInput.closeBtnStyle()
+* chipsInput.autofocus();  // Focus chips input on load.
+
+* chipsInput.maxlength();  // Maxlength for input field.
+
+* chipsInput.chipStyle();  // Accepts Object with CSS property : value pairs, or a pair a strings.
+
+* chipsInput.inputStyle();   // Accepts Object with CSS property : value pairs, or a pair a strings.
+
+* chipsInput.closeBtnStyle();   // Accepts Object with CSS property : value pairs, or a pair a strings.
+
 
 
 ##INFO
