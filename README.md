@@ -69,7 +69,8 @@ Call this function to get rounded chips, or just use custom styles.
 
 You can either pass your style object or single pair.
 
-```$scope.myChipStyle = { color : 'white', background: 'black', height : '50px', fontSize : '25px'};
+```
+$scope.myChipStyle = { color : 'white', background: 'black', height : '50px', fontSize : '25px'};
 
 chipsInput.chipStyle($scope.myChipStyle);
 ```
