@@ -37,8 +37,8 @@ That's it! You are good to go.
 
 ###Initialize Chips with your controller.
 
-```chipsInput.init(
-{
+```
+chipsInput.init({
   chips: ["hey", "billy"], 
   chipStyle : {
      color: '#91d6f0', 
