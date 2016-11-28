@@ -82,19 +82,19 @@ or
 
 Available Options : 
 
-* chipsInput.chips();  //Initial chips to be added.
+* chipsInput.chips (); &nbsp;&nbsp;//Initial chips to be added.
 
-* chipsInput.chipType();  // Options : 'rounded' ( Default will be Sharp Edges )
+* chipsInput.chipType ();  &nbsp;&nbsp;// Options : 'rounded' ( Default will be Sharp Edges )
 
-* chipsInput.autofocus();  // Focus chips input on load.
+* chipsInput.autofocus ();  &nbsp;&nbsp;// Focus chips input on load.
 
-* chipsInput.maxlength();  // Maxlength for input field.
+* chipsInput.maxlength ();  &nbsp;&nbsp;// Maxlength for input field.
 
-* chipsInput.chipStyle();  // Accepts Object with CSS property : value pairs, or a pair a strings.
+* chipsInput.chipStyle ();  &nbsp;&nbsp;// Accepts Object with CSS property : value pairs, or a pair a strings.
 
-* chipsInput.inputStyle();   // Accepts Object with CSS property : value pairs, or a pair a strings.
+* chipsInput.inputStyle ();   &nbsp;&nbsp;// Accepts Object with CSS property : value pairs, or a pair a strings.
 
-* chipsInput.closeBtnStyle();   // Accepts Object with CSS property : value pairs, or a pair a strings.
+* chipsInput.closeBtnStyle ();   &nbsp;&nbsp;// Accepts Object with CSS property : value pairs, or a pair a strings.
 
 
 
