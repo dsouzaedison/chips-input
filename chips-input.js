@@ -295,7 +295,9 @@ angular.module('chips-input', [])
         //Refresh
 
         $scope.refresh = function () {
-            $scope.$apply();
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
         }
     });
 
