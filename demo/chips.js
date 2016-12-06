@@ -5,8 +5,9 @@ angular.module('myModule', ['chips-input'])
 
         // chipsInput.roundedChip();
 
-        chipsInput.inputStyle({color: '#fff'});
+        // chipsInput.inputStyle({color: '#fff'});
 
+        // chipsInput.clear();
         // chipsInput.chipStyle('background', 'black');
         // chipsInput.closeBtnStyle('color', 'red');
         // chipsInput.inputStyle('background', 'orange');
