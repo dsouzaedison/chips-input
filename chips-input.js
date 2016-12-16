@@ -244,8 +244,8 @@ angular.module('chips-input', [])
         $scope.addChip = function (event) {
             if (event.keyCode == 13) {
                 if ($scope.chipName != "") {
-                    if(chipsInput.chips.indexOf($scope.chipName) <= -1)
-                        chipsInput.addChip($scope.chipName);
+                    if(chipsInput.chips.indexOf($scope.chipName.toLowerCase()) <= -1)
+                        chipsInput.addChip($scope.chipName.toLowerCase());
                     $scope.chipName = '';
                 }
             }
@@ -260,7 +260,7 @@ angular.module('chips-input', [])
 
         $scope.addChipOnBlur = function () {
             if ($scope.chipName != "") {
-                chipsInput.addChip($scope.chipName);
+                chipsInput.addChip($scope.chipName.toLowerCase());
                 $scope.chipName = '';
             }
         };
