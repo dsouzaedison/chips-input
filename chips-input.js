@@ -3,7 +3,7 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}" ng-keyup="trimSpace($event)">'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}">'
         };
     })
 
@@ -242,9 +242,10 @@ angular.module('chips-input', [])
         };
 
         $scope.addChip = function (event) {
-            if (event.keyCode == 32 || event.keyCode == 13) {
+            if (event.keyCode == 13) {
                 if ($scope.chipName != "") {
-                    chipsInput.addChip($scope.chipName);
+                    if(chipsInput.chips.indexOf($scope.chipName) <= -1)
+                        chipsInput.addChip($scope.chipName);
                     $scope.chipName = '';
                 }
             }
@@ -264,11 +265,11 @@ angular.module('chips-input', [])
             }
         };
 
-        $scope.trimSpace = function (event) {
-            //Issue : space conflict and input field clear delay
-            if (event.keyCode == 32)
-                document.getElementById('input-chip').value = '';
-        };
+        // $scope.trimSpace = function (event) {
+        //     //Issue : space conflict and input field clear delay
+        //     if (event.keyCode == 32)
+        //         document.getElementById('input-chip').value = '';
+        // };
 
         $scope.deleteChip = function (index) {
             chipsInput.spliceChip(index);
