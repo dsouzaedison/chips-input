@@ -3,7 +3,7 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" xng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" xng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" xng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-repeat="option in customList | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container" ng-style="loadInputContainerStyles()"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-style="dropdownWrapperStyles()" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-style="dropOptionStyles()" ng-repeat="option in customList | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
         };
     })
 
@@ -51,12 +51,28 @@ angular.module('chips-input', [])
             fontSize: '18px',
             lineHeight: '50px',
             overflow: 'hidden',
-            margin: '0px 5px',
-            padding: '0px 25px',
-            position: 'absolute',
             border: 'none',
             color: '#cacaca',
-            background: 'inherit'
+            background: 'inherit',
+            maxWidth: '160px'
+        };
+
+        service.inputContainer = {
+            margin: '0px 5px',
+            maxWidth: '160px',
+            position: 'absolute',
+            display: 'inline-block'
+        };
+
+        service.dropdownWrapper = {
+            background: '#fff',
+            border: '1px solid #eee',
+            boxShadow: '1px 1px 2px #555'
+        };
+
+        service.dropOption = {
+            padding: '4px 10px',
+            cursor: 'pointer'
         };
 
         //SETTERS
@@ -206,7 +222,7 @@ angular.module('chips-input', [])
 
         //PSEUDO CLASS
 
-        var css = '.chips-input:focus {outline: none;} .removeChip:hover {color : #5f5f5f !important;}',
+        var css = '.chips-input:focus {outline: none;} .removeChip:hover {color : #5f5f5f !important;} .drop-option:hover {background: #eee;}',
             head = document.head || document.getElementsByTagName('head')[0],
             style = document.createElement('style');
 
@@ -224,7 +240,7 @@ angular.module('chips-input', [])
         $scope.chipName = '';
 
         $scope.allowCustomText = chipsInput.allowCustomText;
-        
+
         $scope.dropdownEnabled = chipsInput.dropdownEnabled;
 
         $scope.customList = chipsInput.customList;
@@ -271,12 +287,34 @@ angular.module('chips-input', [])
                 'font-size': chipsInput.input.fontSize,
                 'line-height': chipsInput.chip.height,
                 'overflow': chipsInput.input.overflow,
-                'margin': chipsInput.input.margin,
-                'padding': chipsInput.input.padding,
-                'position': chipsInput.input.position,
                 'border': chipsInput.input.border,
                 'color': chipsInput.input.color,
-                'background': chipsInput.input.background
+                'background': chipsInput.input.background,
+                'max-width': chipsInput.input.maxWidth
+            };
+        };
+
+        $scope.loadInputContainerStyles = function () {
+            return {
+                'margin': chipsInput.inputContainer.margin,
+                'max-width': chipsInput.inputContainer.maxWidth,
+                'position': chipsInput.inputContainer.position,
+                'display': chipsInput.inputContainer.display
+            };
+        };
+
+        $scope.dropdownWrapperStyles = function () {
+            return {
+                'background': chipsInput.dropdownWrapper.background,
+                'border': chipsInput.dropdownWrapper.border,
+                'boxShadow': chipsInput.dropdownWrapper.boxShadow,
+            };
+        };
+
+        $scope.dropOptionStyles = function () {
+            return {
+                'padding': chipsInput.dropOption.padding,
+                'cursor': chipsInput.dropOption.cursor,
             };
         };
 
