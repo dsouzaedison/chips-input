@@ -3,5 +3,69 @@ h1 {
 }
 
 body {
-    background: rgb(239, 115, 115);
+    /*background: rgb(239, 115, 115);*/
+    background: #eee;
+}
+
+.chip {
+    color: rgb(122, 127, 130);
+    background: #f1f1f1;
+    height: 50px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), -1px 0 0 rgba(0, 0, 0, 0.03), 1px 0 0 rgba(0, 0, 0, 0.03), 0 1px 0 rgba(0, 0, 0, 0.12);
+    margin: 0 5px;
+    padding: 0 25px;
+    border-radius: 0;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 50px;
+    overflow: hidden;
+    text-transform: Capitalize
+}
+
+.removeChip {
+    padding-left: 10px;
+    color: #888;
+    font-weight: bold;
+    float: right;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.chips-input {
+    height: 48px;
+    min-width: 15px;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 50px;
+    overflow: hidden;
+    /*padding: 0px 10px;*/
+    /*position: absolute;*/
+    border: none;
+    color: #cacaca;
+    /*background: inherit;*/
+    background: #fff;
+
+    max-width: 160px;
+
+}
+
+.input-container {
+    margin: 0px 5px;
+    max-width: 160px;
+    position: absolute;
+    display: inline-block;
+}
+
+.drop-data-wrapper {
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 1px 1px 2px #555;
+}
+
+.drop-option {
+    padding: 4px 10px;
+}
+
+.drop-option:hover {
+    background: #eee;
 }

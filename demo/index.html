@@ -12,9 +12,26 @@
     <link rel="stylesheet" href="app.css"/>
     <script src="../chips-input.js"></script>
     <script src="chips.js"></script>
+    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR52Iv_cxQZHBSEYikSOx0gu271zFcXH4&libraries=places"></script>-->
 </head>
 <body ng-controller="myCtrl">
 <h1>Chips Generator</h1>
 <chips-input></chips-input>
+
+<!--<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span-->
+        <!--style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)"-->
+                                                          <!--ng-style="loadCloseBtnStyles()">&times;</span></div>-->
+<!--<div>-->
+<!--<span class="input-container">-->
+    <!--<input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)"-->
+           <!--ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}">-->
+    <!--<div class="drop-data-wrapper">-->
+        <!--<div class="drop-option">One</div>-->
+        <!--<div class="drop-option">Two</div>-->
+        <!--<div class="drop-option">Three</div>-->
+    <!--</div>-->
+<!--</span>-->
+<!--</div>-->
+
 </body>
 </html>

@@ -3,17 +3,22 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}">'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" xng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" xng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" xng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-repeat="option in customList | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
         };
     })
 
-    .service('chipsInput', function ($rootScope, $window) {
+    .service('chipsInput', function ($rootScope, $window, $http) {
         var service = this;
         service.event = '';
         service.maxlength = 30;
         service.autofocus = false;
+        service.API_KEY = 'AIzaSyDR52Iv_cxQZHBSEYikSOx0gu271zFcXH4';
 
         service.chips = [];
+
+        service.allowCustomText = true;
+
+        service.customList = [];
 
         service.chip = {
             color: 'rgb(122, 127, 130)',
@@ -87,6 +92,17 @@ angular.module('chips-input', [])
                     if (options.chipType == 'rounded')
                         service.roundedChip();
                     else service.throwError('Unknown ChipType in chipsInput.init() Function');
+
+                if (options.allowCustomText == false)
+                    service.allowCustomText = options.allowCustomText;
+                else service.allowCustomText = true;
+
+                if (options.customList)
+                    service.customList = options.customList;
+
+                if (options.dropdownEnabled == false)
+                    service.dropdownEnabled = options.dropdownEnabled;
+                else service.dropdownEnabled = true;
             }
             else service.throwError('Function init() expects an Object');
 
@@ -154,6 +170,23 @@ angular.module('chips-input', [])
             $rootScope.$broadcast('chipStyle:updated');
         };
 
+        //Feature Under Progress
+        service.getPlaceNames = function (keyword) {
+            $http({
+                method: 'GET',
+                async: false,
+                jsonpCallback: 'jsonCallback',
+                contentType: "application/json",
+                dataType: 'jsonp',
+                url: 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' + keyword + '&types=(cities)&language=pt_BR&key=' + service.API_KEY
+            })
+                .then(function (response) {
+                    console.log(response.data);
+                }, function (err) {
+                    console.log(err);
+                });
+        };
+
         service.focus = function () {
             $window.document.getElementById('input-chip').focus();
             // service.refresh();
@@ -189,6 +222,12 @@ angular.module('chips-input', [])
 
     .controller('chipsCtrl', function ($scope, $window, chipsInput) {
         $scope.chipName = '';
+
+        $scope.allowCustomText = chipsInput.allowCustomText;
+        
+        $scope.dropdownEnabled = chipsInput.dropdownEnabled;
+
+        $scope.customList = chipsInput.customList;
 
         $scope.maxlength = chipsInput.maxlength;
 
@@ -241,28 +280,45 @@ angular.module('chips-input', [])
             };
         };
 
-        $scope.addChip = function (event) {
-            if (event.keyCode == 13) {
-                if ($scope.chipName != "") {
-                    if(chipsInput.chips.indexOf($scope.chipName.toLowerCase()) <= -1)
-                        chipsInput.addChip($scope.chipName.toLowerCase());
-                    $scope.chipName = '';
-                }
-            }
+        $scope.chipNotExists = function (chipName) {
+            if (chipsInput.chips.indexOf(chipName.toLowerCase()) <= -1)
+                return true;
+            else return false;
+        };
 
+        $scope.addChipOnClick = function (chipName) {
+            chipsInput.addChip(chipName.toLowerCase());
+            $scope.chipName = '';
+        };
+
+        $scope.addChip = function (event) {
             if (event.keyCode == 8) {
                 if ($scope.chipName == '' && $scope.chips.length > 0)
                     chipsInput.popChip();
             }
 
             chipsInput.focus();
+
+            if (!$scope.allowCustomText) return;
+
+            if (event.keyCode == 13) {
+                if ($scope.chipName != "") {
+                    if (chipsInput.chips.indexOf($scope.chipName.toLowerCase()) <= -1)
+                        chipsInput.addChip($scope.chipName.toLowerCase());
+                    $scope.chipName = '';
+                }
+            } else {
+                // chipsInput.getPlaceNames($scope.chipName);
+            }
+
+            chipsInput.focus();
         };
 
         $scope.addChipOnBlur = function () {
-            if ($scope.chipName != "") {
-                chipsInput.addChip($scope.chipName.toLowerCase());
-                $scope.chipName = '';
-            }
+            // if ($scope.chipName != "" && $scope.allowCustomText) {
+            //     chipsInput.addChip($scope.chipName.toLowerCase());
+            //     $scope.chipName = '';
+            // } else $scope.chipName = '';
         };
 
         // $scope.trimSpace = function (event) {
@@ -296,7 +352,7 @@ angular.module('chips-input', [])
         //Refresh
 
         $scope.refresh = function () {
-            if(!$scope.$$phase) {
+            if (!$scope.$$phase) {
                 $scope.$apply();
             }
         }
