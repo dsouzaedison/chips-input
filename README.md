@@ -53,7 +53,10 @@ chipsInput.init({
     }, 
     autofocus: true, 
     maxlength: 10, 
-    chipType : 'rounded'
+    chipType : 'rounded',
+    allowCustomText: true, 
+    dropdownEnabled : true, 
+    customList : ['NodeJS', 'EmberJS', 'KnockoutJS', 'AngularJS']
 });
 ```
 
