@@ -67,7 +67,9 @@ angular.module('chips-input', [])
         service.dropdownWrapper = {
             background: '#fff',
             border: '1px solid #eee',
-            boxShadow: '1px 1px 2px #555'
+            boxShadow: '1px 1px 2px #555',
+            zIndex: '5',
+            position: 'relative'
         };
 
         service.dropOption = {
@@ -308,13 +310,15 @@ angular.module('chips-input', [])
                 'background': chipsInput.dropdownWrapper.background,
                 'border': chipsInput.dropdownWrapper.border,
                 'boxShadow': chipsInput.dropdownWrapper.boxShadow,
+                'z-index': chipsInput.dropdownWrapper.zIndex,
+                'position': chipsInput.dropdownWrapper.position
             };
         };
 
         $scope.dropOptionStyles = function () {
             return {
                 'padding': chipsInput.dropOption.padding,
-                'cursor': chipsInput.dropOption.cursor,
+                'cursor': chipsInput.dropOption.cursor
             };
         };
 
