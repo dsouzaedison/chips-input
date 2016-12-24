@@ -3,7 +3,7 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container" ng-style="loadInputContainerStyles()"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-style="dropdownWrapperStyles()" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-style="focusedElement == $index ? focusedElementStyles() : dropOptionStyles()" ng-repeat="option in filtered | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container" ng-style="loadInputContainerStyles()"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-keyup="refreshFiltered()" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-style="filtered.length && dropdownWrapperStyles()" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-mouseover="setFocus($index)" ng-style="focusedElement == $index ? focusedElementStyles() : dropOptionStyles()" ng-repeat="option in filtered | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
         };
     })
 
@@ -337,8 +337,12 @@ angular.module('chips-input', [])
         };
 
 
-
-        // console.log($scope.filtered);
+        //Refresh
+        $scope.refresh = function () {
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        };
 
         $scope.refreshFiltered = function () {
             $scope.filtered = $filter('filter')(chipsInput.customList, $scope.chipName);
@@ -350,6 +354,8 @@ angular.module('chips-input', [])
                     // console.log(item);
                 }
             });
+
+            $scope.refresh();
             console.log($scope.filtered);
         };
 
@@ -370,6 +376,9 @@ angular.module('chips-input', [])
         $scope.addChip = function (event) {
             $scope.refreshFiltered();
 
+            if ($scope.chipName == '')
+                $scope.focusedElement = 0;
+
             if (event.keyCode == 8) {
                 if ($scope.chipName == '' && $scope.chips.length > 0)
                     chipsInput.popChip();
@@ -382,7 +391,7 @@ angular.module('chips-input', [])
             //Save on enter
 
 
-            if ((event.keyCode == 13 || event.keyCode == 39) && chipsInput.dropdownEnabled && !chipsInput.allowCustomText) {
+            if ((event.keyCode == 13 || event.keyCode == 39) && chipsInput.dropdownEnabled && !chipsInput.allowCustomText && $scope.chipName != '') {
                 // var flag = true;
                 // $scope.filtered.forEach(function (item) {
                 //     if (chipsInput.chips.indexOf(item.toLowerCase()) <= -1 && flag) {
@@ -398,6 +407,7 @@ angular.module('chips-input', [])
                         break;
                     }
                 }
+
                 $scope.refreshFiltered();
             }
 
@@ -439,6 +449,10 @@ angular.module('chips-input', [])
             // } else $scope.chipName = '';
         };
 
+        $scope.setFocus = function (index) {
+            $scope.focusedElement = index;
+            $scope.refreshFiltered();
+        };
         // $scope.trimSpace = function (event) {
         //     //Issue : space conflict and input field clear delay
         //     if (event.keyCode == 32)
@@ -467,12 +481,6 @@ angular.module('chips-input', [])
             $scope.refresh();
         });
 
-        //Refresh
 
-        $scope.refresh = function () {
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-        }
     });
 
