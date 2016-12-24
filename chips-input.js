@@ -116,7 +116,7 @@ angular.module('chips-input', [])
                     else service.throwError('Unknown ChipType in chipsInput.init() Function');
 
                 if (options.allowCustomText == false)
-                    service.allowCustomText = options.allowCustomText;
+                    service.allowCustomText = false;
                 else service.allowCustomText = true;
 
                 if (options.customList)
@@ -134,12 +134,12 @@ angular.module('chips-input', [])
         service.clear = function () {
             service.chips = [];
             $rootScope.$broadcast('chips:updated');
-        }
+        };
 
         service.addChip = function (chip) {
             service.chips.push(chip);
             $rootScope.$broadcast('chips:updated');
-        }
+        };
 
         service.popChip = function () {
             service.chips.pop();
@@ -161,7 +161,7 @@ angular.module('chips-input', [])
             } else service.throwError('chipStyle parameters unrecognized');
 
             $rootScope.$broadcast('chipStyle:updated');
-        }
+        };
 
         service.closeBtnStyle = function (var1, var2) {
             if (var1 instanceof Object) {
