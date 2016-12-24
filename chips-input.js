@@ -3,7 +3,7 @@ angular.module('chips-input', [])
     .directive("chipsInput", function () {
         return {
             controller: 'chipsCtrl',
-            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container" ng-style="loadInputContainerStyles()"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-style="dropdownWrapperStyles()" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-style="dropOptionStyles()" ng-repeat="option in customList | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
+            template: '<div class="chip" ng-repeat="chip in chips track by $index" ng-style="loadChipStyles()"><span style="pointer-events: none">{{chip}}</span><span class="removeChip" ng-click="deleteChip($index)" ng-style="loadCloseBtnStyles()">&times;</span></div><span><span class="input-container" ng-style="loadInputContainerStyles()"><input type="text" id="input-chip" class="chips-input" ng-model="chipName" ng-keydown="addChip($event)" ng-blur="addChipOnBlur()" ng-style="loadInputStyles()" maxlength="{{maxlength}}"><div class="drop-data-wrapper" ng-style="dropdownWrapperStyles()" ng-show="dropdownEnabled && chipName"><div class="drop-option" ng-style="focusedElement == $index ? focusedElementStyles() : dropOptionStyles()" ng-repeat="option in filtered | filter: chipName" ng-click="addChipOnClick(option)" ng-show="chipNotExists(option)">{{option}}</div></div></span></span>'
         };
     })
 
@@ -75,6 +75,10 @@ angular.module('chips-input', [])
         service.dropOption = {
             padding: '4px 10px',
             cursor: 'pointer'
+        };
+
+        service.focusedElement = {
+            background: '#eee'
         };
 
         //SETTERS
@@ -238,7 +242,7 @@ angular.module('chips-input', [])
         head.appendChild(style);
     })
 
-    .controller('chipsCtrl', function ($scope, $window, chipsInput) {
+    .controller('chipsCtrl', function ($scope, $window, $filter, chipsInput) {
         $scope.chipName = '';
 
         $scope.allowCustomText = chipsInput.allowCustomText;
@@ -252,6 +256,8 @@ angular.module('chips-input', [])
         $scope.chips = chipsInput.chips;
 
         $scope.disabled = chipsInput.disabled;
+
+        $scope.focusedElement = 0;
 
         $scope.loadChipStyles = function () {
             return {
@@ -322,6 +328,33 @@ angular.module('chips-input', [])
             };
         };
 
+        $scope.focusedElementStyles = function () {
+            return {
+                'padding': chipsInput.dropOption.padding,
+                'cursor': chipsInput.dropOption.cursor,
+                'background': chipsInput.focusedElement.background
+            };
+        };
+
+
+
+        // console.log($scope.filtered);
+
+        $scope.refreshFiltered = function () {
+            $scope.filtered = $filter('filter')(chipsInput.customList, $scope.chipName);
+            // $scope.filtered = chipsInput.customList;
+
+            $scope.filtered.forEach(function (item) {
+                if (chipsInput.chips.indexOf(item.toLowerCase()) > -1) {
+                    $scope.filtered.splice($scope.filtered.indexOf(item), 1);
+                    // console.log(item);
+                }
+            });
+            console.log($scope.filtered);
+        };
+
+        $scope.refreshFiltered();
+
         $scope.chipNotExists = function (chipName) {
             if (chipsInput.chips.indexOf(chipName.toLowerCase()) <= -1)
                 return true;
@@ -330,16 +363,57 @@ angular.module('chips-input', [])
 
         $scope.addChipOnClick = function (chipName) {
             chipsInput.addChip(chipName.toLowerCase());
+            $scope.refreshFiltered();
             $scope.chipName = '';
         };
 
         $scope.addChip = function (event) {
+            $scope.refreshFiltered();
+
             if (event.keyCode == 8) {
                 if ($scope.chipName == '' && $scope.chips.length > 0)
                     chipsInput.popChip();
+
+                $scope.refreshFiltered();
             }
 
             chipsInput.focus();
+
+            //Save on enter
+
+
+            if ((event.keyCode == 13 || event.keyCode == 39) && chipsInput.dropdownEnabled && !chipsInput.allowCustomText) {
+                // var flag = true;
+                // $scope.filtered.forEach(function (item) {
+                //     if (chipsInput.chips.indexOf(item.toLowerCase()) <= -1 && flag) {
+                //         $scope.addChipOnClick(item);
+                //         flag = false;
+                //     }
+                // });
+
+                for (var i = $scope.focusedElement; i < $scope.filtered.length; i++) {
+                    if (chipsInput.chips.indexOf($scope.filtered[i].toLowerCase()) <= -1) {
+                        $scope.addChipOnClick($scope.filtered[i]);
+                        $scope.focusedElement = 0;
+                        break;
+                    }
+                }
+                $scope.refreshFiltered();
+            }
+
+            //Down Arrow
+            if (event.keyCode == 40 && $scope.focusedElement < $scope.filtered.length - 1) {
+                $scope.focusedElement++;
+                // $scope.chipName = $scope.filtered[$scope.focusedElement];
+            }
+
+
+            //Up Arrow
+            if (event.keyCode == 38 && $scope.focusedElement > 0) {
+                $scope.focusedElement--;
+                // $scope.chipName = $scope.filtered[$scope.focusedElement];
+            }
+
 
             if (!$scope.allowCustomText) return;
 
@@ -349,10 +423,12 @@ angular.module('chips-input', [])
                         chipsInput.addChip($scope.chipName.toLowerCase());
                     $scope.chipName = '';
                 }
+                $scope.refreshFiltered();
             } else {
                 // chipsInput.getPlaceNames($scope.chipName);
             }
 
+            $scope.refreshFiltered();
             chipsInput.focus();
         };
 
