@@ -346,17 +346,18 @@ angular.module('chips-input', [])
 
         $scope.refreshFiltered = function () {
             $scope.filtered = $filter('filter')(chipsInput.customList, $scope.chipName);
-            // $scope.filtered = chipsInput.customList;
 
             $scope.filtered.forEach(function (item) {
+                // console.log('ForEach : ' + $scope.filtered.indexOf(item));
                 if (chipsInput.chips.indexOf(item.toLowerCase()) > -1) {
                     $scope.filtered.splice($scope.filtered.indexOf(item), 1);
-                    // console.log(item);
                 }
             });
 
-            $scope.refresh();
+            // $scope.refresh();
             // console.log($scope.filtered);
+            // console.log('custom : ' + chipsInput.customList);
+            // console.log('chips : ' + chipsInput.chips);
         };
 
         $scope.refreshFiltered();
@@ -371,6 +372,7 @@ angular.module('chips-input', [])
             chipsInput.addChip(chipName.toLowerCase());
             $scope.refreshFiltered();
             $scope.chipName = '';
+            chipsInput.focus();
         };
 
         $scope.addChip = function (event) {
