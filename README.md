@@ -3,6 +3,11 @@ Add chips input field to your Angular App!
 
 ![capture](https://cloud.githubusercontent.com/assets/14832322/20634354/01f8a3dc-b376-11e6-90b3-2de59dd10b72.JPG)
 
+#Customized Suggestions
+Provide typing suggestions with custom values!
+
+![image](https://cloud.githubusercontent.com/assets/14832322/21467267/0b757d88-ca0d-11e6-9003-53ec62b81b17.png)
+
 ##Bower :
 
 Install using Bower
