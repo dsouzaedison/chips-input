@@ -356,7 +356,7 @@ angular.module('chips-input', [])
             });
 
             $scope.refresh();
-            console.log($scope.filtered);
+            // console.log($scope.filtered);
         };
 
         $scope.refreshFiltered();
@@ -392,14 +392,6 @@ angular.module('chips-input', [])
 
 
             if ((event.keyCode == 13 || event.keyCode == 39) && chipsInput.dropdownEnabled && !chipsInput.allowCustomText && $scope.chipName != '') {
-                // var flag = true;
-                // $scope.filtered.forEach(function (item) {
-                //     if (chipsInput.chips.indexOf(item.toLowerCase()) <= -1 && flag) {
-                //         $scope.addChipOnClick(item);
-                //         flag = false;
-                //     }
-                // });
-
                 for (var i = $scope.focusedElement; i < $scope.filtered.length; i++) {
                     if (chipsInput.chips.indexOf($scope.filtered[i].toLowerCase()) <= -1) {
                         $scope.addChipOnClick($scope.filtered[i]);
@@ -414,14 +406,12 @@ angular.module('chips-input', [])
             //Down Arrow
             if (event.keyCode == 40 && $scope.focusedElement < $scope.filtered.length - 1) {
                 $scope.focusedElement++;
-                // $scope.chipName = $scope.filtered[$scope.focusedElement];
             }
 
 
             //Up Arrow
             if (event.keyCode == 38 && $scope.focusedElement > 0) {
                 $scope.focusedElement--;
-                // $scope.chipName = $scope.filtered[$scope.focusedElement];
             }
 
 

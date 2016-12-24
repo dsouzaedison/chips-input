@@ -11,8 +11,4 @@ angular.module('myModule', ['chips-input'])
         // chipsInput.chipStyle('background', 'black');
         // chipsInput.closeBtnStyle('color', 'red');
         // chipsInput.inputStyle('background', 'orange');
-
-        // $scope.name = ['one', 'two', 'three', 'edison', 'jason'];
-        // var fil = $filter('filter')($scope.name, "e");
-        // console.log(fil);
     });
